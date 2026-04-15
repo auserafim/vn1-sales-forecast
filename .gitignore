@@ -4,6 +4,11 @@
 lightning_logs
 *.db
 
+.env/
+.venv/
+venv/
+
+
 ##########################
 # KEDRO PROJECT
 
