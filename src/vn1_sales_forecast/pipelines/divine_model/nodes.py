@@ -1,6 +1,8 @@
+from mlforecast import forecast
 import polars as pl
 
 from vn1_sales_forecast.cv import split_cv_loo
+from vn1_sales_forecast.pipelines import classification
 from vn1_sales_forecast.settings import PRED_PREFIX
 from vn1_sales_forecast.utils import multi_join
 
@@ -53,8 +55,8 @@ def _calc_ensemble(classification: pl.LazyFrame, *forecast: pl.LazyFrame) -> pl.
             e = pl.when(pl.col("id") == id).then(PRED_PREFIX + model).otherwise(e)
 
         return e
-
-    total = multi_join(*forecast, on=["id", "date"]).join(classification, on=["id"])
+    total = multi_join(*forecast, on=["id", "date"]).join(classification, on=["id"], suffix="_class")
+    # total = multi_join(*forecast, on=["id", "date"]).join(classification, on=["id"])
     return total.select(
         "id",
         "date",
